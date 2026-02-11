@@ -1,13 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Logging in...', { email, password });
+    setMessage('Logging in...');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Login successful!');
+        localStorage.setItem('access_token', data.access_token);
+        setTimeout(() => navigate('/dashboard'), 2000);
+      } else {
+        setMessage(`Error: ${data.detail || 'Invalid credentials'}`);
+      }
+    } catch (error) {
+      setMessage('Error connecting to server.');
+      console.error(error);
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -71,6 +99,12 @@ const Login = () => {
               Sign in
             </button>
           </form>
+          {message && (
+            <p className={`mt-4 text-center text-sm ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
+              {message}
+            </p>
+          )}
+
 
           <div className="mt-6">
             <div className="relative">
@@ -90,7 +124,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-        
+
         <p className="mt-6 text-center text-sm text-gray-600">
           Not a member?{' '}
           <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Start a 14-day free trial</a>
