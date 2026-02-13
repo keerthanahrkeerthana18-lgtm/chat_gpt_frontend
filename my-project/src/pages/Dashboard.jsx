@@ -38,7 +38,7 @@ const Dashboard = () => {
             const token = localStorage.getItem('access_token');
             if (!token) return;
             try {
-                const res = await fetch('http://127.0.0.1:8000/chats', {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE}/chats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -82,7 +82,7 @@ const Dashboard = () => {
 
             // 1. Create Chat if needed
             if (!currentChatId) {
-                const createRes = await fetch('http://127.0.0.1:8000/chats', {
+                const createRes = await fetch(`${import.meta.env.VITE_API_BASE}/chats`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({ title: userQuery.substring(0, 30) })
@@ -95,14 +95,14 @@ const Dashboard = () => {
             }
 
             // 2. Save User Message
-            await fetch(`http://127.0.0.1:8000/chats/${currentChatId}/messages`, {
+            await fetch(`${import.meta.env.VITE_API_BASE}/chats/${currentChatId}/messages`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ role: 'user', content: userQuery })
             });
 
             // 3. Get AI Response
-            const response = await fetch('http://127.0.0.1:8000/ask', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE}/ask`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
@@ -120,7 +120,7 @@ const Dashboard = () => {
             const aiMsg = { role: 'assistant', content: data.response };
 
             // 4. Save AI Message
-            await fetch(`http://127.0.0.1:8000/chats/${currentChatId}/messages`, {
+            await fetch(`${import.meta.env.VITE_API_BASE}/chats/${currentChatId}/messages`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ role: 'assistant', content: data.response })
@@ -145,7 +145,7 @@ const Dashboard = () => {
     const loadChat = async (chatId) => {
         const token = localStorage.getItem('access_token');
         try {
-            const res = await fetch(`http://127.0.0.1:8000/chats/${chatId}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE}/chats/${chatId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -164,7 +164,7 @@ const Dashboard = () => {
         e.stopPropagation();
         const token = localStorage.getItem('access_token');
         try {
-            const res = await fetch(`http://127.0.0.1:8000/chats/${chatId}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE}/chats/${chatId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

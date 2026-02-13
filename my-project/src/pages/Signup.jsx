@@ -18,7 +18,7 @@ const Signup = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/signup', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const Signup = () => {
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={{ textAlign: 'center' }}>Create Account</h2>
-        
+
         <input
           type="email"
           name="email"
@@ -55,7 +55,7 @@ const Signup = () => {
           required
           style={styles.input}
         />
-        
+
         <input
           type="password"
           name="password"
